@@ -3,7 +3,7 @@
 **Student:** Mohamed Guudle  
 **Student ID:** W2045871  
 **Module:** 5COSC022W Client-Server Architectures  
-**Coursework:** Smart Campus REST API (60% of final grade)
+
 
 ---
 
@@ -1076,7 +1076,3 @@ A well-designed filter can be packaged into a library JAR and dropped into any J
 **In summary**, JAX-RS filters provide a **declarative, centralised, consistent, and maintainable** approach to cross-cutting concerns. Manual logging is **imperative, scattered, error-prone, and fragile**. The filter pattern is the industry-standard approach recommended by the JAX-RS specification itself.
 
 ---
-
-## Conclusion
-
-This Smart Campus API demonstrates core RESTful principles including proper HTTP method usage, semantically accurate status codes, HATEOAS discoverability, robust error handling with custom exceptions and exception mappers, thread-safe in-memory storage via `ConcurrentHashMap`, and cross-cutting concern management via JAX-RS filters. The application is bootstrapped on **embedded Apache Tomcat 9.0.100** with **Jersey 2.39.1** as the JAX-RS implementation, producing a single runnable fat JAR that works seamlessly in NetBeans and from the command line.
