@@ -3,7 +3,7 @@
 **Student:** Mohamed Guudle  
 **Student ID:** W2045871  
 **Module:** 5COSC022W Client-Server Architectures  
-**Coursework:** Smart Campus REST API (60% of final grade)
+**Coursework:** Smart Campus REST API
 
 ---
 
@@ -893,7 +893,3 @@ Filters can be added, removed, or modified without touching any resource code. T
 In summary, JAX-RS filters provide a **declarative, centralized, and maintainable** approach to cross-cutting concerns that is superior to the **imperative, scattered, and error-prone** approach of manual logging statements.
 
 ---
-
-## Conclusion
-
-This Smart Campus API demonstrates core RESTful principles including proper HTTP method usage, appropriate status codes, HATEOAS discoverability, robust error handling with custom exceptions, thread-safe in-memory storage, and cross-cutting concern management via JAX-RS filters. The implementation follows industry best practices and provides a solid foundation for a scalable campus sensor management system.
