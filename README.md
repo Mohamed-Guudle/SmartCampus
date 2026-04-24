@@ -141,23 +141,12 @@ Client Request
 2. NetBeans will recognise the `pom.xml` and import it as a Maven project.
 3. Wait for the IDE to finish resolving dependencies (watch the bottom status bar).
 
-#### Option B: Command Line
-
-```bash
-cd smart-campus-api
-```
-
 ### Step 2 — Build the Project
 
 #### NetBeans
 
 Right-click the project → **Clean and Build** (or press `Shift+F11`).
 
-#### Command Line
-
-```bash
-mvn clean package
-```
 
 Maven will:
 1. Compile all source files.
@@ -169,12 +158,6 @@ Maven will:
 #### NetBeans
 
 Right-click `Main.java` → **Run File** (or press `Shift+F6`).
-
-#### Command Line
-
-```bash
-java -jar target/smart-campus-api-1.0-SNAPSHOT.jar
-```
 
 You will see the following banner in the console:
 
@@ -198,9 +181,6 @@ In NetBeans: **Run → Set Project Configuration → Customise…** → add `909
 
 ### Step 5 — Verify the Server
 
-```bash
-curl http://localhost:8080/api/v1/
-```
 
 You should receive a JSON response with API metadata and navigation links.
 
@@ -209,205 +189,6 @@ You should receive a JSON response with API metadata and navigation links.
 Press `Ctrl+C` in the terminal, or click the red **Stop** button in NetBeans.
 
 ---
-
-## Sample cURL Commands
-
-Below are **seven** representative commands that exercise every major feature of the API.
-
-### 1. Discovery Endpoint — Get API Metadata
-
-```bash
-curl -s -X GET http://localhost:8080/api/v1/ \
-  -H "Accept: application/json" | python -m json.tool
-```
-
-**Expected Response (200 OK):**
-
-```json
-{
-    "name": "Smart Campus API",
-    "description": "RESTful API for managing campus rooms, sensors, and sensor readings.",
-    "version": "1.0.0",
-    "status": "operational",
-    "contact": {
-        "name": "Smart Campus Support",
-        "email": "smartcampus@university.ac.uk",
-        "documentation": "https://github.com/W2045871/smart-campus-api/blob/main/README.md"
-    },
-    "_links": {
-        "self": "/api/v1/",
-        "rooms": "/api/v1/rooms",
-        "sensors": "/api/v1/sensors"
-    },
-    "resources": {
-        "rooms": "Manage campus rooms (GET, POST, DELETE)",
-        "sensors": "Manage sensors and filter by type (GET, POST)",
-        "readings": "Access via /sensors/{sensorId}/readings (GET, POST)"
-    }
-}
-```
-
----
-
-### 2. Create a New Room (POST)
-
-```bash
-curl -s -X POST http://localhost:8080/api/v1/rooms \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json" \
-  -d '{
-    "id": "CONF-201",
-    "name": "Conference Room 201",
-    "capacity": 15
-  }' | python -m json.tool
-```
-
-**Expected Response (201 Created):**
-
-```json
-{
-    "id": "CONF-201",
-    "name": "Conference Room 201",
-    "capacity": 15,
-    "sensorIds": []
-}
-```
-
-A `Location: /api/v1/rooms/CONF-201` header is also returned.
-
----
-
-### 3. List All Rooms (GET)
-
-```bash
-curl -s -X GET http://localhost:8080/api/v1/rooms \
-  -H "Accept: application/json" | python -m json.tool
-```
-
-**Expected Response (200 OK):** A JSON array containing the three pre-populated rooms (`LIB-301`, `LAB-102`, `LEC-HALL-A`) plus any you have created.
-
----
-
-### 4. Filter Sensors by Type (GET with QueryParam)
-
-```bash
-curl -s -X GET "http://localhost:8080/api/v1/sensors?type=CO2" \
-  -H "Accept: application/json" | python -m json.tool
-```
-
-**Expected Response (200 OK):**
-
-```json
-[
-    {
-        "id": "CO2-001",
-        "type": "CO2",
-        "status": "ACTIVE",
-        "currentValue": 450.0,
-        "roomId": "LIB-301"
-    }
-]
-```
-
----
-
-### 5. Add a Sensor Reading via the Sub-Resource (POST)
-
-```bash
-curl -s -X POST http://localhost:8080/api/v1/sensors/TEMP-001/readings \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json" \
-  -d '{ "value": 23.8 }' | python -m json.tool
-```
-
-**Expected Response (201 Created):**
-
-```json
-{
-    "id": "a1b2c3d4-...-ef1234567890",
-    "timestamp": 1713801600000,
-    "value": 23.8
-}
-```
-
-**Side-effect:** the parent sensor `TEMP-001`'s `currentValue` is updated to `23.8`.
-
----
-
-### 6. Delete a Room That Still Has Sensors — 409 Conflict
-
-```bash
-curl -s -X DELETE http://localhost:8080/api/v1/rooms/LIB-301 \
-  -H "Accept: application/json" | python -m json.tool
-```
-
-**Expected Response (409 Conflict):**
-
-```json
-{
-    "error": "Conflict",
-    "statusCode": 409,
-    "message": "Room 'LIB-301' cannot be deleted because it still has 2 sensor(s) assigned to it. Please remove all sensors before deleting the room.",
-    "roomId": "LIB-301",
-    "activeSensors": 2,
-    "resolution": "Remove all sensors from this room before attempting deletion."
-}
-```
-
----
-
-### 7. Create a Sensor Referencing a Non-Existent Room — 422 Unprocessable Entity
-
-```bash
-curl -s -X POST http://localhost:8080/api/v1/sensors \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json" \
-  -d '{
-    "id": "TEMP-999",
-    "type": "Temperature",
-    "status": "ACTIVE",
-    "currentValue": 20.0,
-    "roomId": "NON-EXISTENT-ROOM"
-  }' | python -m json.tool
-```
-
-**Expected Response (422 Unprocessable Entity):**
-
-```json
-{
-    "error": "Unprocessable Entity",
-    "statusCode": 422,
-    "message": "The Room 'NON-EXISTENT-ROOM' referenced in field 'roomId' does not exist in the system.",
-    "field": "roomId",
-    "invalidValue": "NON-EXISTENT-ROOM",
-    "resourceType": "Room",
-    "resolution": "Ensure the referenced resource exists before creating this resource."
-}
-```
-
----
-
-### Bonus: Submit a Reading to a MAINTENANCE Sensor — 403 Forbidden
-
-```bash
-curl -s -X POST http://localhost:8080/api/v1/sensors/OCC-001/readings \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json" \
-  -d '{ "value": 5.0 }' | python -m json.tool
-```
-
-**Expected Response (403 Forbidden):**
-
-```json
-{
-    "error": "Forbidden",
-    "statusCode": 403,
-    "message": "Sensor 'OCC-001' is currently in 'MAINTENANCE' status and cannot accept new readings. Please wait until the sensor returns to ACTIVE status.",
-    "sensorId": "OCC-001",
-    "currentStatus": "MAINTENANCE",
-    "resolution": "Wait for the sensor to return to ACTIVE status before submitting readings."
-}
-```
 
 ---
 
