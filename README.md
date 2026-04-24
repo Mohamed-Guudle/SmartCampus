@@ -7,22 +7,6 @@
 
 ---
 
-## Table of Contents
-
-1. [Overview](#overview)
-2. [Technology Stack](#technology-stack)
-3. [Project Structure](#project-structure)
-4. [Build and Run Instructions](#build-and-run-instructions)
-5. [Sample cURL Commands](#sample-curl-commands)
-6. [Report Answers](#report-answers)
-   - [Part 1: Service Architecture & Setup](#part-1-service-architecture--setup)
-   - [Part 2: Room Management](#part-2-room-management)
-   - [Part 3: Sensor Operations & Linking](#part-3-sensor-operations--linking)
-   - [Part 4: Deep Nesting with Sub-Resources](#part-4-deep-nesting-with-sub-resources)
-   - [Part 5: Advanced Error Handling, Exception Mapping & Logging](#part-5-advanced-error-handling-exception-mapping--logging)
-
----
-
 ## Overview
 
 The Smart Campus API is a RESTful web service built using **JAX-RS (Jersey)** that provides comprehensive management of campus rooms, sensors, and sensor readings. The application is bootstrapped on an **embedded Apache Tomcat 9.0.100** servlet container, replacing the Jetty server used in earlier iterations. The API follows REST architectural principles including proper use of HTTP methods and status codes, HATEOAS for discoverability, and robust error handling with custom exceptions and exception mappers.
@@ -66,7 +50,7 @@ The Smart Campus API is a RESTful web service built using **JAX-RS (Jersey)** th
 | **Apache Tomcat (Embedded)** | **9.0.100** | **Embedded servlet container** |
 | Maven | 3.6+ | Build tool and dependency management |
 
-> **Why Tomcat?** Tomcat is the most widely deployed Java servlet container in production. Using Tomcat Embedded gives us the same reliability and Servlet 4.0 compliance as a standalone Tomcat installation while keeping the convenience of a single runnable JAR. The `jersey-container-servlet` adapter connects Jersey to Tomcat's servlet engine via the standard `javax.servlet.http.HttpServlet` API.
+
 
 ---
 
